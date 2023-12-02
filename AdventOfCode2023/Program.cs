@@ -6,7 +6,7 @@ namespace AdventOfCode2023.Solutions
     {
         public static void Main()
         {
-            Day1_2.Execute();
+            Day2_1.Execute();
         }
     }
 }

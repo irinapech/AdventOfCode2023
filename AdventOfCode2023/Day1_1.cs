@@ -9,7 +9,7 @@ namespace AdventOfCode2023
             String line;
             try
             {
-            StreamReader sr = new StreamReader("C:\\Users\\DSU\\OneDrive - Dakota State University\\Desktop\\repositories\\AdventOfCode2023\\AdventOfCode2023\\Day1.txt");
+            StreamReader sr = new StreamReader("../Day1.txt");
 
                 line = sr.ReadLine();
                 List<string> lines = new List<string>();
