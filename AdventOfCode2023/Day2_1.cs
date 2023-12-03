@@ -27,15 +27,18 @@ namespace AdventOfCode2023
                 }
                 sr.Close();
 
-                int numberOfRedCubes = 12;
-                int numberOfGreenCubes = 13;
-                int numberOfBlueCubes = 14;
-
                 //# go through each line (separated by line)
                 //# go through each allCubesDrawn (separated by ;)
                 //# go through each cube (separated by ,)
                 //#if out of possible range - allCubesDrawn the flag to false
                 //#if the flag is still true (aka the game is possible) - add its ID to the sum
+
+                Dictionary<string, int> numberOfCubes = new()
+                {
+                    {"red", 12 },
+                    {"green", 13 },
+                    {"blue", 14 }
+                };
 
                 int sumOfIDsOfPossibleGames = 0;
 
@@ -52,9 +55,7 @@ namespace AdventOfCode2023
                         {
                             int number = Convert.ToInt32(cube.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)[0]);
                             string color = cube.Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries)[1];
-                            if (color == "red" &&  number > numberOfRedCubes
-                                || color == "green" && number > numberOfGreenCubes
-                                || color == "blue" && number > numberOfBlueCubes)
+                            if (number > numberOfCubes[color])
                             {
                                 isGamePossible = false;
                             }
