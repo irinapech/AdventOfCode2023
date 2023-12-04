@@ -1,12 +1,28 @@
 with open("day3.txt") as file:
     lines = file.readlines()
 
+def get_bread(line_index, start, end):
+    if start == 0 and end == len(lines[line_index]) - 1:
+        return lines[line_index][start:end + 1]
+    elif start == 0 and end < len(lines[line_index]) - 1:
+        return lines[line_index][start:end + 2]
+    elif start > 0 and end == len(lines[line_index]) - 1:
+        return lines[line_index][start - 1:end + 1]
+    elif start > 0 and end < len(lines[line_index]) - 1:
+        return lines[line_index][start - 1:end + 2]
+    
+def get_star_index(line_index, start, line):
+    index_of_star_in_chars_below = line.index('*')
+    if start != 0:
+        return str(line_index) + '_' + str(start - 1 + index_of_star_in_chars_below)
+    else:
+        return str(line_index) + '_' + str(start + index_of_star_in_chars_below)
+    
 for line in lines:
     line = line.replace('\n', '')
 
 numbers_adjacent_to_star = {}
 
-sum_of_part_numbers = 0
 for k in range(len(lines)):
     lines[k] = lines[k].strip()
     i = 0
@@ -17,75 +33,52 @@ for k in range(len(lines)):
             chars_below = ""
             chars_above = ""
 
-            start = i
+            number_start = i
             j = i + 1
             while (j < len(lines[k]) and lines[k][j].isdigit()):
                 j += 1
-            end = j - 1
-            number = lines[k][start:end + 1]
+            number_end = j - 1
+            number = lines[k][number_start:number_end + 1]
 
             # check if there is * adjacent above
             if k > 0:
-                if start == 0 and end == len(lines[k - 1]) - 1:
-                    chars_above = lines[k - 1][start:end + 1]
-                elif start == 0 and end < len(lines[k - 1]) - 1:
-                    chars_above = lines[k - 1][start:end + 2]
-                elif start > 0 and end == len(lines[k - 1]) - 1:
-                    chars_above = lines[k - 1][start - 1:end + 1]
-                elif start > 0 and end < len(lines[k - 1]) - 1:
-                    chars_above = lines[k - 1][start - 1:end + 2]
+                chars_above = get_bread(k - 1, number_start, number_end)
+                
                 if '*' in chars_above:
                     is_number_adjacent_to_star = True
-                    index_of_star_in_chars_above = chars_above.index('*')
-                    if start != 0:
-                        index_of_star = str(k - 1) + '_' + str(start - 1 + index_of_star_in_chars_above)
-                    else:
-                        index_of_star = str(k - 1) + '_' + str(start + index_of_star_in_chars_above)
+                    index_of_star = get_star_index(k - 1, number_start, chars_above)
 
             # check if there is * adjacent below
             if k < len(lines) - 1:
-                if start == 0 and end == len(lines[k + 1]) - 1:
-                    chars_below = lines[k + 1][start:end + 1]
-                elif start == 0 and end < len(lines[k + 1]) - 1:
-                    chars_below = lines[k + 1][start:end + 2]
-                elif start > 0 and end == len(lines[k + 1]) - 1:
-                    chars_below = lines[k + 1][start - 1:end + 1]
-                elif start > 0 and end < len(lines[k + 1]) - 1:
-                    chars_below = lines[k + 1][start - 1:end + 2]
+                chars_below = get_bread(k + 1, number_start, number_end)
                 
                 if '*' in chars_below:
-                    if '*' in chars_below:
-                        is_number_adjacent_to_star = True
-                        index_of_star_in_chars_below = chars_below.index('*')
-                        if start != 0:
-                            index_of_star = str(k + 1) + '_' + str(start - 1 + index_of_star_in_chars_below)
-                        else:
-                            index_of_star = str(k + 1) + '_' + str(start + index_of_star_in_chars_below)
-
+                    is_number_adjacent_to_star = True
+                    index_of_star = get_star_index(k + 1, number_start, chars_below)
 
             # check if there is * adjacent left
-            if start > 0:
-                if lines[k][start - 1] == '*':
+            if number_start > 0:
+                if lines[k][number_start - 1] == '*':
                     is_number_adjacent_to_star = True
-                    index_of_star = str(k) + '_' + str(start - 1)
+                    index_of_star = str(k) + '_' + str(number_start - 1)
 
             # check if there is * adjacent right
-            if end < len(lines[k]) - 1:
-                if lines[k][end + 1] == '*':
+            if number_end < len(lines[k]) - 1:
+                if lines[k][number_end + 1] == '*':
                     is_number_adjacent_to_star = True
-                    index_of_star = str(k) + '_' + str(end + 1)
+                    index_of_star = str(k) + '_' + str(number_end + 1)
 
             if is_number_adjacent_to_star:
                 if index_of_star not in numbers_adjacent_to_star:
                     numbers_adjacent_to_star[index_of_star] = []
                 numbers_adjacent_to_star[index_of_star].append(int(number))
             
-            i += end - start
+            i += number_end - number_start
 
         i += 1
 
-SUM = 0
+sum_of_gear_ratios = 0
 for key in numbers_adjacent_to_star:
     if len(numbers_adjacent_to_star[key]) == 2:
-        SUM += numbers_adjacent_to_star[key][0] * numbers_adjacent_to_star[key][1]
-print(SUM)
+        sum_of_gear_ratios += numbers_adjacent_to_star[key][0] * numbers_adjacent_to_star[key][1]
+print(sum_of_gear_ratios)
